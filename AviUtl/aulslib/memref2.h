@@ -1,8 +1,8 @@
 /**
 *	memref2.h by 蛇色
 *
-*	memref.h を改造して auls_memref.auf ではなく、
-*	auls_memref.ini からアドレスを取得するようにした。
+*	memref.h を改造して、auls_memref.auf ではなく
+*	auls_memref.ini からアドレスを取得するようにしました。
 **/
 #pragma once
 
@@ -31,6 +31,7 @@ public:
 	DWORD m_Exedit_StaticFilterTable;
 	DWORD m_Exedit_SortedObjectTable_LayerIndexEnd;
 	DWORD m_Exedit_AliasNameBuffer;
+	DWORD m_Exedit_SortedObjectCount;
 	DWORD m_Exedit_ObjDlg_CommandTarget;
 	DWORD m_Exedit_SortedObjectTable_LayerIndexBegin;
 	DWORD m_Exedit_ObjDlg_FilterStatus;
@@ -69,6 +70,7 @@ public:
 		m_Exedit_StaticFilterTable = 0;
 		m_Exedit_SortedObjectTable_LayerIndexEnd = 0;
 		m_Exedit_AliasNameBuffer = 0;
+		m_Exedit_SortedObjectCount = 0;
 		m_Exedit_ObjDlg_CommandTarget = 0;
 		m_Exedit_SortedObjectTable_LayerIndexBegin = 0;
 		m_Exedit_ObjDlg_FilterStatus = 0;
@@ -151,6 +153,7 @@ public:
 			m_Exedit_StaticFilterTable = getHex(iniFilePath, appName, TEXT("Exedit_StaticFilterTable"));
 			m_Exedit_SortedObjectTable_LayerIndexEnd = getHex(iniFilePath, appName, TEXT("Exedit_SortedObjectTable_LayerIndexEnd"));
 			m_Exedit_AliasNameBuffer = getHex(iniFilePath, appName, TEXT("Exedit_AliasNameBuffer"));
+			m_Exedit_SortedObjectCount = getHex(iniFilePath, appName, TEXT("Exedit_SortedObjectCount"));
 			m_Exedit_ObjDlg_CommandTarget = getHex(iniFilePath, appName, TEXT("Exedit_ObjDlg_CommandTarget"));
 			m_Exedit_SortedObjectTable_LayerIndexBegin = getHex(iniFilePath, appName, TEXT("Exedit_SortedObjectTable_LayerIndexBegin"));
 			m_Exedit_ObjDlg_FilterStatus = getHex(iniFilePath, appName, TEXT("Exedit_ObjDlg_FilterStatus"));
@@ -213,6 +216,11 @@ public:
 	LPTSTR Exedit_AliasNameBuffer()
 	{
 		return (LPTSTR)(m_exedit + m_Exedit_AliasNameBuffer);
+	}
+
+	int Exedit_SortedObjectCount()
+	{
+		return *(int*)(m_exedit + m_Exedit_SortedObjectCount);
 	}
 
 	int Exedit_ObjDlg_CommandTarget()

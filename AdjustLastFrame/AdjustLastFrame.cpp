@@ -10,9 +10,12 @@ BOOL adjustLastFrame(FILTER *fp, FILTER_PROC_INFO *fpip)
 	// 現在編集中のシーンの中で最も後ろにあるオブジェクト位置を取得する。
 	int frameEndNumber = -1000;
 	{
+		// オブジェクトの個数を取得する。
+		int c = g_memref.Exedit_SortedObjectCount();
+		// オブジェクトテーブルを取得する。
 		auls::EXEDIT_OBJECT** objects = g_memref.Exedit_SortedObjectTable();
 
-		for (int i = 0; objects[i]; i++)
+		for (int i = 0; i < c; i++)
 		{
 			if (scene != objects[i]->scene_set)
 				continue; // 現在のシーン内のオブジェクトではなかった。
@@ -37,22 +40,10 @@ BOOL adjustLastFrame(FILTER *fp, FILTER_PROC_INFO *fpip)
 
 	if (!exeditWindow)
 		return FALSE;
-#if 0
-	fp->exfunc->set_frame_n(fpip->editp, frameEndNumber);
-#elif 1
-//	::OutputDebugString(_T("::PostMessage(exeditWindow, WM_COMMAND, 1097, 0)\n"));
-	::PostMessage(exeditWindow, WM_COMMAND, 1097, 0);
-#else
-	static BOOL locked = FALSE; // 念の為、再帰呼び出しを防止する。
 
-	if (!locked)
-	{
-		locked = TRUE;
-		// "最後のオブジェクト位置を最終フレーム" コマンドを発行する。
-		::SendMessage(exeditWindow, WM_COMMAND, 1097, 0);
-		locked = FALSE;
-	}
-#endif
+	// 「最後のオブジェクト位置を最終フレーム」コマンドをポストする。
+	::PostMessage(exeditWindow, WM_COMMAND, 1097, 0);
+
 	return TRUE;
 }
 
@@ -62,7 +53,7 @@ BOOL adjustLastFrame(FILTER *fp, FILTER_PROC_INFO *fpip)
 EXTERN_C FILTER_DLL __declspec(dllexport) * __stdcall GetFilterTable(void)
 {
 	static TCHAR g_filterName[] = TEXT("最終フレーム自動調整");
-	static TCHAR g_filterInformation[] = TEXT("最終フレーム自動調整 version 1.0.2 by 蛇色");
+	static TCHAR g_filterInformation[] = TEXT("最終フレーム自動調整 version 1.0.3 by 蛇色");
 
 	static FILTER_DLL g_filter =
 	{
