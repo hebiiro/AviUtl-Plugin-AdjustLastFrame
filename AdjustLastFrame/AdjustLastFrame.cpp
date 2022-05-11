@@ -1,26 +1,27 @@
 ﻿#include "pch.h"
 
-auls::CMemref g_memref;
+AviUtlInternal g_auin;
 
 BOOL adjustLastFrame(FILTER *fp, FILTER_PROC_INFO *fpip)
 {
 	// 現在編集中のシーンのインデックスを取得する。
-	int scene = g_memref.Exedit_SceneDisplaying();
+	int scene = g_auin.GetCurrentSceneIndex();
 
 	// 現在編集中のシーンの中で最も後ろにあるオブジェクト位置を取得する。
 	int frameEndNumber = -1000;
 	{
 		// オブジェクトの個数を取得する。
-		int c = g_memref.Exedit_SortedObjectCount();
-		// オブジェクトテーブルを取得する。
-		auls::EXEDIT_OBJECT** objects = g_memref.Exedit_SortedObjectTable();
+		int c = g_auin.GetCurrentSceneObjectCount();
 
 		for (int i = 0; i < c; i++)
 		{
-			if (scene != objects[i]->scene_set)
+			// オブジェクトを取得する。
+			ExEdit::Object* object = g_auin.GetSortedObject(i);
+
+			if (scene != object->scene_set)
 				continue; // 現在のシーン内のオブジェクトではなかった。
 
-			frameEndNumber = yulib::Max(frameEndNumber, objects[i]->frame_end);
+			frameEndNumber = max(frameEndNumber, object->frame_end);
 		}
 	}
 
@@ -36,7 +37,7 @@ BOOL adjustLastFrame(FILTER *fp, FILTER_PROC_INFO *fpip)
 		return FALSE;
 
 	// 拡張編集ウィンドウを取得する。
-	HWND exeditWindow = auls::Exedit_GetWindow(fp);
+	HWND exeditWindow = g_auin.GetExeditWindow();
 
 	if (!exeditWindow)
 		return FALSE;
@@ -53,7 +54,7 @@ BOOL adjustLastFrame(FILTER *fp, FILTER_PROC_INFO *fpip)
 EXTERN_C FILTER_DLL __declspec(dllexport) * __stdcall GetFilterTable(void)
 {
 	static TCHAR g_filterName[] = TEXT("最終フレーム自動調整");
-	static TCHAR g_filterInformation[] = TEXT("最終フレーム自動調整 version 1.0.3 by 蛇色");
+	static TCHAR g_filterInformation[] = TEXT("最終フレーム自動調整 2.0.0 by 蛇色");
 
 	static FILTER_DLL g_filter =
 	{
@@ -86,10 +87,9 @@ EXTERN_C FILTER_DLL __declspec(dllexport) * __stdcall GetFilterTable(void)
 //---------------------------------------------------------------------
 //		初期化
 //---------------------------------------------------------------------
-
 BOOL func_init(FILTER *fp)
 {
-	return g_memref.Init(fp); // auls::CMemref の初期化。
+	return g_auin.init();
 }
 
 //---------------------------------------------------------------------

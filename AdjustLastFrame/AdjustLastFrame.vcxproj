@@ -94,13 +94,15 @@
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
-      <AdditionalIncludeDirectories>../AviUtl/</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>../../;../../AviUtl/aviutl_exedit_sdk/</AdditionalIncludeDirectories>
+      <LanguageStandard>stdcpplatest</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableUAC>false</EnableUAC>
       <ModuleDefinitionFile>$(TargetName).def</ModuleDefinitionFile>
+      <AdditionalLibraryDirectories>../../</AdditionalLibraryDirectories>
     </Link>
     <PostBuildEvent>
       <Command>copy /B /Y "$(TargetDir)$(TargetFileName)" "C:\AviUtl110_test\Plugins\$(TargetName).auf"</Command>
@@ -116,7 +118,8 @@
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
-      <AdditionalIncludeDirectories>../AviUtl/</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>../../;../../AviUtl/aviutl_exedit_sdk/</AdditionalIncludeDirectories>
+      <LanguageStandard>stdcpplatest</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -125,6 +128,7 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableUAC>false</EnableUAC>
       <ModuleDefinitionFile>$(TargetName).def</ModuleDefinitionFile>
+      <AdditionalLibraryDirectories>../../</AdditionalLibraryDirectories>
     </Link>
     <PostBuildEvent>
       <Command>copy /B /Y "$(TargetDir)$(TargetFileName)" "C:\AviUtl110_test\Plugins\$(TargetName).auf"</Command>
@@ -138,13 +142,15 @@
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
-      <AdditionalIncludeDirectories>../AviUtl/</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>../../;../../AviUtl/aviutl_exedit_sdk/</AdditionalIncludeDirectories>
+      <LanguageStandard>stdcpplatest</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableUAC>false</EnableUAC>
       <ModuleDefinitionFile>$(TargetName).def</ModuleDefinitionFile>
+      <AdditionalLibraryDirectories>../../</AdditionalLibraryDirectories>
     </Link>
     <PostBuildEvent>
       <Command>copy /B /Y "$(TargetDir)$(TargetFileName)" "C:\AviUtl110_test\Plugins\$(TargetName).auf"</Command>
@@ -160,7 +166,8 @@
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
-      <AdditionalIncludeDirectories>../AviUtl/</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>../../;../../AviUtl/aviutl_exedit_sdk/</AdditionalIncludeDirectories>
+      <LanguageStandard>stdcpplatest</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -169,6 +176,7 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableUAC>false</EnableUAC>
       <ModuleDefinitionFile>$(TargetName).def</ModuleDefinitionFile>
+      <AdditionalLibraryDirectories>../../</AdditionalLibraryDirectories>
     </Link>
     <PostBuildEvent>
       <Command>copy /B /Y "$(TargetDir)$(TargetFileName)" "C:\AviUtl110_test\Plugins\$(TargetName).auf"</Command>
