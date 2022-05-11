@@ -4,6 +4,9 @@ AviUtlInternal g_auin;
 
 BOOL adjustLastFrame(FILTER *fp, FILTER_PROC_INFO *fpip)
 {
+	if (g_auin.GetExeditFrameNumber() == 0)
+		return FALSE; // 拡張編集の最終フレーム番号が無効の場合は何もしない。
+
 	// 現在編集中のシーンのインデックスを取得する。
 	int scene = g_auin.GetCurrentSceneIndex();
 
@@ -54,7 +57,7 @@ BOOL adjustLastFrame(FILTER *fp, FILTER_PROC_INFO *fpip)
 EXTERN_C FILTER_DLL __declspec(dllexport) * __stdcall GetFilterTable(void)
 {
 	static TCHAR g_filterName[] = TEXT("最終フレーム自動調整");
-	static TCHAR g_filterInformation[] = TEXT("最終フレーム自動調整 2.0.0 by 蛇色");
+	static TCHAR g_filterInformation[] = TEXT("最終フレーム自動調整 2.0.1 by 蛇色");
 
 	static FILTER_DLL g_filter =
 	{
