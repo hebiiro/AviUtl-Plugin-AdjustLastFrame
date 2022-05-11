@@ -2,5 +2,17 @@
 
 #define WIN32_LEAN_AND_MEAN
 #include <windows.h>
+#include <windowsx.h>
+#include <shlwapi.h>
+#pragma comment(lib, "shlwapi.lib")
 
-#include "aulslib/memref2.h"
+#include <tchar.h>
+#include <crtdbg.h>
+#include <strsafe.h>
+#include <locale.h>
+
+#include "AviUtl/aviutl_plugin_sdk/filter.h"
+#include "AviUtl/aviutl_exedit_sdk/exedit.hpp"
+#include "Common/Tracer.h"
+#include "Common/Hook.h"
+#include "Common/AviUtlInternal.h"
