@@ -4,6 +4,9 @@ AviUtlInternal g_auin;
 
 BOOL adjustLastFrame(FILTER *fp, FILTER_PROC_INFO *fpip)
 {
+	if (!fp->check[0])
+		return FALSE; // "最終フレームを自動調整する" にチェックが入っていない場合は何もしない。
+
 	if (g_auin.GetExeditFrameNumber() == 0)
 		return FALSE; // 拡張編集の最終フレーム番号が無効の場合は何もしない。
 
@@ -54,22 +57,29 @@ BOOL adjustLastFrame(FILTER *fp, FILTER_PROC_INFO *fpip)
 //---------------------------------------------------------------------
 //		フィルタ構造体のポインタを渡す関数
 //---------------------------------------------------------------------
-EXTERN_C FILTER_DLL __declspec(dllexport) * __stdcall GetFilterTable(void)
+EXTERN_C __declspec(dllexport) FILTER_DLL* CALLBACK GetFilterTable()
 {
 	static TCHAR g_filterName[] = TEXT("最終フレーム自動調整");
-	static TCHAR g_filterInformation[] = TEXT("最終フレーム自動調整 2.0.1 by 蛇色");
+	static TCHAR g_filterInformation[] = TEXT("最終フレーム自動調整 2.1.0 by 蛇色");
+
+	static LPCSTR check_name[] =
+	{
+		"最終フレームを自動調整する",
+	};
+	static int check_def[] =
+	{
+		TRUE,
+	};
 
 	static FILTER_DLL g_filter =
 	{
-		FILTER_FLAG_NO_CONFIG |
 		FILTER_FLAG_ALWAYS_ACTIVE |
 		FILTER_FLAG_DISP_FILTER |
 		FILTER_FLAG_EX_INFORMATION,
 		0, 0,
 		g_filterName,
-		NULL, NULL, NULL,
-		NULL, NULL,
-		NULL, NULL, NULL,
+		NULL, NULL, NULL, NULL, NULL,
+		sizeof(check_name) / sizeof(*check_name), (TCHAR**)check_name, check_def,
 		func_proc,
 		func_init,
 		func_exit,
@@ -92,7 +102,10 @@ EXTERN_C FILTER_DLL __declspec(dllexport) * __stdcall GetFilterTable(void)
 //---------------------------------------------------------------------
 BOOL func_init(FILTER *fp)
 {
-	return g_auin.init();
+	if (!g_auin.initExEditAddress())
+		return FALSE;
+
+	return TRUE;
 }
 
 //---------------------------------------------------------------------
