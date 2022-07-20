@@ -124,6 +124,9 @@ BOOL func_exit(AviUtl::FilterPlugin* fp)
 
 BOOL func_proc(AviUtl::FilterPlugin* fp, AviUtl::FilterProcInfo* fpip)
 {
+	if (fp->exfunc->is_saving(fpip->editp))
+		return FALSE; // 保存するときは何もしない。
+
 	return adjustLastFrame(fp, fpip);
 }
 
@@ -150,7 +153,7 @@ static int check_def[] =
 EXTERN_C AviUtl::FilterPluginDLL* CALLBACK GetFilterTable()
 {
 	LPCSTR name = "最終フレーム自動調整";
-	LPCSTR information = "最終フレーム自動調整 2.2.0 by 蛇色";
+	LPCSTR information = "最終フレーム自動調整 2.2.1 by 蛇色";
 
 	static AviUtl::FilterPluginDLL filter =
 	{
