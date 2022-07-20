@@ -5,13 +5,15 @@
 #include <windowsx.h>
 #include <shlwapi.h>
 #pragma comment(lib, "shlwapi.lib")
+#include <mmsystem.h>
+#pragma comment(lib, "winmm.lib")
 
 #include <tchar.h>
 #include <crtdbg.h>
 #include <strsafe.h>
 #include <locale.h>
 
-#include "AviUtl/aviutl_plugin_sdk/filter.h"
+#include "AviUtl/aviutl_exedit_sdk/aviutl.hpp"
 #include "AviUtl/aviutl_exedit_sdk/exedit.hpp"
 #include "Common/Tracer.h"
 #include "Common/Hook.h"

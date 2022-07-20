@@ -1,13 +1,64 @@
 ﻿#include "pch.h"
 
+//--------------------------------------------------------------------
+
+// デバッグ用コールバック関数。デバッグメッセージを出力する。
+void ___outputLog(LPCTSTR text, LPCTSTR output)
+{
+	::OutputDebugString(output);
+}
+
+//--------------------------------------------------------------------
+
+struct Track
+{
+	static const int32_t Voice = 0;
+};
+
+struct Check
+{
+	static const int32_t Enable = 0;
+};
+
+//--------------------------------------------------------------------
+
 AviUtlInternal g_auin;
 
-BOOL adjustLastFrame(FILTER *fp, FILTER_PROC_INFO *fpip)
+//--------------------------------------------------------------------
+
+void voice(AviUtl::FilterPlugin* fp, AviUtl::FilterProcInfo* fpip)
+{
+	// ボイスの番号を取得する。
+	int voice = fp->track[Track::Voice];
+
+	if (voice)
+	{
+		// フォルダ名を取得する。
+		TCHAR folderName[MAX_PATH] = {};
+		::GetModuleFileName(fp->dll_hinst, folderName, MAX_PATH);
+		::PathRemoveExtension(folderName);
+		MY_TRACE_TSTR(folderName);
+
+		// wav ファイルのパスを取得する。
+		TCHAR wavFileName[MAX_PATH] = {};
+		::StringCbPrintf(wavFileName, sizeof(wavFileName), _T("%s\\%d.wav"), folderName, voice);
+		MY_TRACE_TSTR(wavFileName);
+
+		// ファイルが存在するなら
+		if (::GetFileAttributes(wavFileName) != INVALID_FILE_ATTRIBUTES)
+		{
+			// wav ファイルを再生する。
+			::PlaySound(wavFileName, 0, SND_FILENAME | SND_ASYNC);
+		}
+	}
+}
+
+BOOL adjustLastFrame(AviUtl::FilterPlugin* fp, AviUtl::FilterProcInfo* fpip)
 {
 	if (!fp->check[0])
 		return FALSE; // "最終フレームを自動調整する" にチェックが入っていない場合は何もしない。
 
-	if (g_auin.GetExeditFrameNumber() == 0)
+	if (g_auin.GetExEditFrameNumber() == 0)
 		return FALSE; // 拡張編集の最終フレーム番号が無効の場合は何もしない。
 
 	// 現在編集中のシーンのインデックスを取得する。
@@ -43,7 +94,7 @@ BOOL adjustLastFrame(FILTER *fp, FILTER_PROC_INFO *fpip)
 		return FALSE;
 
 	// 拡張編集ウィンドウを取得する。
-	HWND exeditWindow = g_auin.GetExeditWindow();
+	HWND exeditWindow = g_auin.GetExEditWindow();
 
 	if (!exeditWindow)
 		return FALSE;
@@ -51,56 +102,14 @@ BOOL adjustLastFrame(FILTER *fp, FILTER_PROC_INFO *fpip)
 	// 「最後のオブジェクト位置を最終フレーム」コマンドをポストする。
 	::PostMessage(exeditWindow, WM_COMMAND, 1097, 0);
 
+	voice(fp, fpip);
+
 	return TRUE;
 }
 
-//---------------------------------------------------------------------
-//		フィルタ構造体のポインタを渡す関数
-//---------------------------------------------------------------------
-EXTERN_C __declspec(dllexport) FILTER_DLL* CALLBACK GetFilterTable()
-{
-	static TCHAR g_filterName[] = TEXT("最終フレーム自動調整");
-	static TCHAR g_filterInformation[] = TEXT("最終フレーム自動調整 2.1.0 by 蛇色");
+//--------------------------------------------------------------------
 
-	static LPCSTR check_name[] =
-	{
-		"最終フレームを自動調整する",
-	};
-	static int check_def[] =
-	{
-		TRUE,
-	};
-
-	static FILTER_DLL g_filter =
-	{
-		FILTER_FLAG_ALWAYS_ACTIVE |
-		FILTER_FLAG_DISP_FILTER |
-		FILTER_FLAG_EX_INFORMATION,
-		0, 0,
-		g_filterName,
-		NULL, NULL, NULL, NULL, NULL,
-		sizeof(check_name) / sizeof(*check_name), (TCHAR**)check_name, check_def,
-		func_proc,
-		func_init,
-		func_exit,
-		NULL,
-		NULL,
-		NULL, NULL,
-		NULL,
-		NULL,
-		g_filterInformation,
-		NULL, NULL,
-		NULL, NULL, NULL, NULL,
-		NULL,
-	};
-
-	return &g_filter;
-}
-
-//---------------------------------------------------------------------
-//		初期化
-//---------------------------------------------------------------------
-BOOL func_init(FILTER *fp)
+BOOL func_init(AviUtl::FilterPlugin* fp)
 {
 	if (!g_auin.initExEditAddress())
 		return FALSE;
@@ -108,18 +117,63 @@ BOOL func_init(FILTER *fp)
 	return TRUE;
 }
 
-//---------------------------------------------------------------------
-//		終了
-//---------------------------------------------------------------------
-BOOL func_exit(FILTER *fp)
+BOOL func_exit(AviUtl::FilterPlugin* fp)
 {
 	return FALSE;
 }
 
-//---------------------------------------------------------------------
-//		メイン処理
-//---------------------------------------------------------------------
-BOOL func_proc(FILTER *fp, FILTER_PROC_INFO *fpip)
+BOOL func_proc(AviUtl::FilterPlugin* fp, AviUtl::FilterProcInfo* fpip)
 {
 	return adjustLastFrame(fp, fpip);
 }
+
+//--------------------------------------------------------------------
+
+LPCSTR track_name[] =
+{
+	"ﾎﾞｲｽ",
+};
+
+int track_def[] = {  1 };
+int track_min[] = {  0 };
+int track_max[] = { 10 };
+
+static LPCSTR check_name[] =
+{
+	"最終フレームを自動調整する",
+};
+static int check_def[] =
+{
+	TRUE,
+};
+
+EXTERN_C AviUtl::FilterPluginDLL* CALLBACK GetFilterTable()
+{
+	LPCSTR name = "最終フレーム自動調整";
+	LPCSTR information = "最終フレーム自動調整 2.2.0 by 蛇色";
+
+	static AviUtl::FilterPluginDLL filter =
+	{
+		.flag =
+			AviUtl::detail::FilterPluginFlag::AlwaysActive |
+			AviUtl::detail::FilterPluginFlag::DispFilter |
+			AviUtl::detail::FilterPluginFlag::ExInformation,
+		.name = name,
+		.track_n = sizeof(track_name) / sizeof(*track_name),
+		.track_name = track_name,
+		.track_default = track_def,
+		.track_s = track_min,
+		.track_e = track_max,
+		.check_n = sizeof(check_name) / sizeof(*check_name),
+		.check_name = check_name,
+		.check_default = check_def,
+		.func_proc = func_proc,
+		.func_init = func_init,
+		.func_exit = func_exit,
+		.information = information,
+	};
+
+	return &filter;
+}
+
+//--------------------------------------------------------------------
