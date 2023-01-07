@@ -11,7 +11,8 @@
 
 ## ボイス
 
-AdjustLastFrame フォルダ内の wav ファイルが再生されます。
+AdjustLastFrame フォルダ内の wav ファイルが再生されます。<br>
+※ [WavPlayer](../../../WavPlayer/) を導入する必要があります。
 
 * 0 ボイスなし
 * 1 青山龍星（ノーマル）最終フレームをちょうせいしました
@@ -21,6 +22,7 @@ AdjustLastFrame フォルダ内の wav ファイルが再生されます。
 
 ## 更新履歴
 
+* 2.3.0 - 2023/01/07 音を外部プロセスで鳴らすように変更
 * 2.2.1 - 2022/07/20 保存時に何もしないように修正
 * 2.2.0 - 2022/07/20 発動を知らせるボイスを追加
 * 2.1.0 - 2022/06/15 ON/OFF を切り替えられるように変更
@@ -34,7 +36,7 @@ AdjustLastFrame フォルダ内の wav ファイルが再生されます。
 ## 動作確認
 
 * (必須) AviUtl 1.10 & 拡張編集 0.92 http://spring-fragrance.mints.ne.jp/aviutl/
-* (共存確認) patch.aul r41 https://scrapbox.io/ePi5131/patch.aul
+* (共存確認) patch.aul r42 https://scrapbox.io/ePi5131/patch.aul
 
 ## クレジット
 
