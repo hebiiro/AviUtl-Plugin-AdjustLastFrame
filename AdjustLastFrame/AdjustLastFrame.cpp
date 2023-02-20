@@ -44,24 +44,7 @@ void voice(AviUtl::FilterPlugin* fp, AviUtl::FilterProcInfo* fpip)
 		::StringCbPrintf(wavFileName, sizeof(wavFileName), _T("%s\\%d.wav"), folderName, voice);
 		MY_TRACE_TSTR(wavFileName);
 
-		// ファイルが存在するなら
-		if (::GetFileAttributes(wavFileName) != INVALID_FILE_ATTRIBUTES)
-		{
-			// wav ファイルを再生する。
-
-			TCHAR exeFileName[MAX_PATH] = {};
-			::GetModuleFileName(0, exeFileName, MAX_PATH);
-			::PathRemoveFileSpec(exeFileName);
-			::PathAppend(exeFileName, _T("WavPlayer.exe"));
-			::PathQuoteSpaces(exeFileName);
-			MY_TRACE_TSTR(exeFileName);
-
-			SHELLEXECUTEINFO sei = { sizeof(sei) };
-			sei.lpFile = exeFileName;
-			sei.lpParameters = wavFileName;
-			BOOL result = ::ShellExecuteEx(&sei);
-			MY_TRACE_HEX(result);
-		}
+		g_auin.voice(fp, fpip, wavFileName);
 	}
 }
 
@@ -162,17 +145,17 @@ static int check_def[] =
 	TRUE,
 };
 
-EXTERN_C AviUtl::FilterPluginDLL* CALLBACK GetFilterTable()
+EXTERN_C AviUtl::FilterPluginDLL* WINAPI GetFilterTable()
 {
 	LPCSTR name = "最終フレーム自動調整";
-	LPCSTR information = "最終フレーム自動調整 2.2.1 by 蛇色";
+	LPCSTR information = "最終フレーム自動調整 2.3.1 by 蛇色";
 
 	static AviUtl::FilterPluginDLL filter =
 	{
 		.flag =
-			AviUtl::detail::FilterPluginFlag::AlwaysActive |
-			AviUtl::detail::FilterPluginFlag::DispFilter |
-			AviUtl::detail::FilterPluginFlag::ExInformation,
+			AviUtl::FilterPlugin::Flag::AlwaysActive |
+			AviUtl::FilterPlugin::Flag::DispFilter |
+			AviUtl::FilterPlugin::Flag::ExInformation,
 		.name = name,
 		.track_n = sizeof(track_name) / sizeof(*track_name),
 		.track_name = track_name,
